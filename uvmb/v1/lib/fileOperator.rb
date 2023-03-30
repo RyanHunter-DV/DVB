@@ -1,0 +1,55 @@
+require 'debugger.rb'
+class FileOperator
+	attr_accessor :filename;
+	attr_accessor :path;
+
+	attr :debug;
+	def initialize(fn,d=nil) ##{{{
+		@debug = d;
+		@debug = Debugger.new(false) if d==nil;
+		@filename = fn;
+		@path = '.';
+	end ##}}}
+
+	def captureContent(s=1,e=-1) ##{{{
+		full = File.join(@path,@filename);
+		fh = File.open(full,'r');
+		all = fh.readlines(); fh.close;
+		e = all.length if e==-1;
+		@debug.print("capture range: #{s} -> #{e}");
+		captured=[];
+		for i in s..e do
+			captured << all[i-1].chomp! if i>=s and i<=e;
+		end
+		return captured;
+	end ##}}}
+	def writefile(cnts) ##{{{
+		full = File.join(@path,@filename);
+		fh=File.open(full,'w');fh.close;
+		insertContent(1,cnts);
+	end ##}}}
+	def insertContent(s=1,cnts) ##{{{
+		@debug.print("insert to: #{@filename},#{s}");
+		puts "insert cnts: #{cnts}";
+		full = File.join(@path,@filename);
+		fh = File.open(full,'r');
+		origin = fh.readlines();fh.close;
+		new = [];
+		current = 1;
+		origin.each do |l|
+			@debug.print("looping origin,s:#{s},current:#{current} line:#{l}");
+			if s==current
+				@debug.print("append cnts:#{cnts} to line:#{current}");
+				new.append(*cnts);
+			end
+			new << l;
+			current += 1;
+		end
+		new.append(*cnts) if origin.empty?;
+		fh = File.open(@filename,'w');
+		new.each do |l|
+			fh.write(l);
+		end
+		fh.close;
+	end ##}}}
+end
