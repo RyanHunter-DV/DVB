@@ -3,10 +3,9 @@ class UVMObject < SVClass
 	def initialize(cn,d) ##{{{
 		super(cn,d);
 	end ##}}}
-
 	def publish ##{{{
 		cnts = [];
-		code();
+		cnts = code(:declare);
 		buildfile(cnts);
 	end ##}}}
 end

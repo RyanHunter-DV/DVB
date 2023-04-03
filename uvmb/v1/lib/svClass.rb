@@ -16,5 +16,6 @@ class SVClass < SVFile
 		return fn;
 	end ##}}}
 
-
+	def code(usage) ##{{{
+	end ##}}}
 end
